@@ -421,7 +421,7 @@ export function HomePage() {
       <section id="top" className="relative w-full scroll-mt-20">
         <div ref={heroRef} className="relative h-screen w-full overflow-hidden">
           <Image src={heroImage} alt="Atendimento Fluxy" priority fill sizes="100vw" className="object-cover" />
-          <div className="absolute inset-0 bg-black/55 backdrop-blur-[1px]" />
+          <div className="absolute inset-0 bg-black/55" />
           <div className="absolute inset-0 flex items-end pb-16 sm:pb-20">
             <div className="mx-auto flex w-full max-w-6xl flex-col items-center gap-8 px-4 text-center sm:flex-row sm:items-end sm:justify-between sm:px-0 sm:text-left">
               <h1 className="w-full font-[family-name:var(--font-display)] text-3xl font-bold text-white sm:text-4xl lg:text-5xl">
