@@ -45,7 +45,7 @@ export function LeadForm() {
 
   if (sent) {
     return (
-      <div className="bg-card text-card-foreground border-border flex w-full flex-col items-center gap-3 rounded-none border p-8 text-center shadow-xl">
+      <div className="flex w-full flex-col items-center gap-3 bg-white p-8 text-center text-navy">
         <CheckCircle2 className="text-success size-12" />
         <h3 className="font-[family-name:var(--font-display)] text-xl font-semibold">Solicitação recebida!</h3>
         <p className="text-muted-foreground text-sm">
@@ -61,7 +61,7 @@ export function LeadForm() {
   return (
     <form
       onSubmit={handleSubmit}
-      className="bg-card text-card-foreground border-border flex w-full flex-col gap-4 rounded-none border p-6 text-left shadow-xl sm:p-8"
+      className="flex w-full flex-col gap-4 bg-white p-6 text-left text-navy sm:p-10"
     >
       <div className="grid gap-4 sm:grid-cols-2">
         <div className="flex flex-col gap-1.5">

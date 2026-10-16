@@ -48,6 +48,23 @@
   --radius-xl: calc(var(--radius) + 4px);
 }
 
+/* Páginas públicas: capítulos de cor da marca. Cada seção é um campo de cor
+   chapada com a sua tinta de texto; nada de degradê, sombra ou fio entre
+   eles. Azul Fluxy (#1E56E9) é o acento: botões e um campo inteiro. */
+@theme {
+  --color-navy: #070f26;
+  --color-night: #0e1d4a;
+  --color-brand: #1e56e9;
+  --color-brand-deep: #1848c9;
+  --color-sky: #dce6fd;
+  --color-paper: #f6f7fb;
+  --color-mist: #e9edf7;
+  --font-lux: var(--font-epilogue), ui-sans-serif, system-ui, sans-serif;
+  --ease-lux: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-lux-soft: cubic-bezier(0.33, 1, 0.68, 1);
+  --ease-lux-travel: cubic-bezier(0.76, 0, 0.24, 1);
+}
+
 :root {
   --radius: 1rem;
 
@@ -149,8 +166,9 @@
   background-color: var(--color-background);
 }
 
+/* taste-skill-ignore: degradê do admin, fora das páginas públicas. */
 .bg-sidebar-gradient {
-  background: linear-gradient(180deg, var(--color-sidebar) 0%, color-mix(in oklch, var(--color-sidebar), var(--color-primary) 4%) 100%);
+  background: linear-gradient(180deg, var(--color-sidebar) 0%, color-mix(in oklch, var(--color-sidebar), var(--color-primary) 4%) 100%); /* taste-skill-ignore */
 }
 
 /* Entrada da logo na home pública: começa grande e vai encolhendo até o
@@ -189,4 +207,197 @@
    devagar porque os cards são largos e têm texto pra ler. */
 .animate-marquee-slow {
   animation: marquee 45s linear infinite;
+}
+
+/* Demo do agente de IA: os três pontinhos do "digitando…" e o papel de
+   parede do WhatsApp (pontilhado bem sutil sobre o bege). */
+@keyframes typing-dot {
+  0%,
+  60%,
+  100% {
+    transform: translateY(0);
+    opacity: 0.4;
+  }
+  30% {
+    transform: translateY(-3px);
+    opacity: 1;
+  }
+}
+
+.animate-typing-dot {
+  animation: typing-dot 1.2s ease-in-out infinite;
+}
+
+.bg-chat-wallpaper {
+  background-color: #efeae2;
+  /* taste-skill-ignore: papel de parede do WhatsApp no fragmento data-ui. */
+  background-image: radial-gradient(rgb(0 0 0 / 0.045) 1px, transparent 1px); /* taste-skill-ignore */
+  background-size: 14px 14px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-typing-dot {
+    animation: none;
+  }
+}
+
+/* ---------- Páginas públicas ---------- */
+
+.site {
+  font-family: var(--font-lux);
+  background-color: var(--color-paper);
+  color: var(--color-navy);
+  font-feature-settings: normal;
+}
+
+/* Em @layer components pra que os utilitários do Tailwind (hidden, lg:inline-flex…)
+   ainda consigam sobrescrever. */
+@layer components {
+/* Títulos: Epilogue 900, apertado. */
+.site .display {
+  font-weight: 900;
+  letter-spacing: -0.04em;
+  line-height: 0.92;
+  text-wrap: balance;
+}
+
+/* Botão único do site: pílula chapada, cede no clique. */
+.site .pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  border-radius: 999px;
+  padding: 0.95rem 1.6rem;
+  font-weight: 500;
+  font-size: 1.0625rem;
+  line-height: 1;
+  transition:
+    transform 140ms var(--ease-lux),
+    background-color 180ms ease,
+    color 180ms ease;
+}
+.site .pill:active {
+  transform: scale(0.97);
+}
+.site .pill:focus-visible,
+.site a:focus-visible,
+.site button:focus-visible {
+  outline: 3px solid var(--color-brand);
+  outline-offset: 3px;
+}
+
+/* A seta dentro do botão avança um pouco no hover. */
+.site .pill .pill-arrow {
+  transition: transform 180ms var(--ease-lux);
+}
+@media (hover: hover) and (pointer: fine) {
+  .site .pill:hover .pill-arrow {
+    transform: translateX(4px);
+  }
+}
+
+/* Link de texto: sublinhado que aparece sob o ponteiro. */
+.site .text-link {
+  text-decoration: underline;
+  text-decoration-color: transparent;
+  text-underline-offset: 0.2em;
+  text-decoration-thickness: 0.07em;
+  transition: text-decoration-color 180ms ease;
+}
+@media (hover: hover) and (pointer: fine) {
+  .site .text-link:hover {
+    text-decoration-color: currentColor;
+  }
+}
+
+/* Abas das pastas de produto: ombros cortados em diagonal. */
+.folder-tab {
+  clip-path: polygon(0 100%, 0 0, calc(100% - 28px) 0, 100% 100%);
+}
+}
+
+/* Entradas. Só escondem com JS ativo (classe .js no <html>) e sem
+   "reduzir movimento"; o observer em use-reveal.ts marca .is-in. */
+@media (prefers-reduced-motion: no-preference) {
+  /* Hero: título linha a linha saindo de trás da própria linha de base. */
+  .js .hero-line > span {
+    display: block;
+    transform: translateY(105%);
+    animation: line-up 900ms var(--ease-lux) forwards;
+    animation-delay: calc(var(--i, 0) * 110ms + 150ms);
+  }
+  .js [data-rise] {
+    opacity: 0;
+    transform: translateY(18px);
+    animation: rise 800ms var(--ease-lux) forwards;
+    animation-delay: calc(var(--i, 0) * 90ms + 380ms);
+  }
+
+  /* Gesto de assinatura: a foto do hero abre como um obturador. */
+  .js .shutter {
+    clip-path: inset(0 0 0 100%);
+    animation: shutter-open 1100ms var(--ease-lux-travel) 200ms forwards;
+  }
+  .js .shutter img {
+    transform: scale(1.12);
+    animation: shutter-settle 1600ms var(--ease-lux-soft) 200ms forwards;
+  }
+
+  /* Seções: as partes chegam em ordem de leitura (--i), uma vez. */
+  .js [data-reveal] [data-part] {
+    opacity: 0;
+    transform: translateY(24px);
+    transition:
+      opacity 700ms var(--ease-lux),
+      transform 900ms var(--ease-lux);
+    transition-delay: calc(var(--i, 0) * 80ms);
+  }
+  .js [data-reveal].is-in [data-part] {
+    opacity: 1;
+    transform: none;
+  }
+
+  /* Fotos que entram assentando de uma escala levemente maior. */
+  .js [data-reveal] [data-settle] {
+    transform: scale(1.08);
+    transition: transform 1600ms var(--ease-lux-soft);
+  }
+  .js [data-reveal].is-in [data-settle] {
+    transform: none;
+  }
+
+  /* Foto do hero respirando devagar depois de aberta. */
+  .drift {
+    animation: drift 24s ease-in-out 1.8s infinite alternate;
+  }
+}
+
+@keyframes line-up {
+  to {
+    transform: none;
+  }
+}
+@keyframes rise {
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes shutter-open {
+  to {
+    clip-path: inset(0);
+  }
+}
+@keyframes shutter-settle {
+  to {
+    transform: none;
+  }
+}
+@keyframes drift {
+  from {
+    transform: scale(1) translate3d(0, 0, 0);
+  }
+  to {
+    transform: scale(1.06) translate3d(-1.5%, 1%, 0);
+  }
 }

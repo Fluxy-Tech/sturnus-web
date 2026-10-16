@@ -2,12 +2,9 @@
 
 import { useRef } from "react";
 import Image from "next/image";
-import { CalendarCheck, ShieldCheck } from "lucide-react";
 import coverImage from "@/assets/ImagemParaCapaDeSeguranca.jpeg";
-import { buttonVariants } from "@/components/ui/button";
 import { SiteFooter } from "@/components/site/site-footer";
 import { SiteHeader, usePastHero } from "@/components/site/site-header";
-import { cn } from "@/lib/utils";
 
 interface PolicySection {
   title: string;
@@ -102,7 +99,7 @@ const SECTIONS: PolicySection[] = [
   {
     title: "15. Dados do agente responsável",
     paragraphs: [
-      "Controladora: Sturnus Flow [Razão social a confirmar] — CNPJ [a confirmar] — [endereço a confirmar]. Estes dados de identificação societária serão atualizados aqui antes da publicação oficial desta política.",
+      "Controladora: Sturnus Flow [Razão social a confirmar], CNPJ [a confirmar], [endereço a confirmar]. Estes dados de identificação societária serão atualizados aqui antes da publicação oficial desta política.",
     ],
   },
   {
@@ -118,11 +115,11 @@ export function PrivacyPolicyPage() {
   const pastHero = usePastHero(heroRef);
 
   return (
-    <div className="bg-dot-grid min-h-screen">
+    <div className="site min-h-svh">
       <SiteHeader transparent={!pastHero} />
 
       <section className="relative w-full scroll-mt-20">
-        <div ref={heroRef} className="relative h-screen w-full overflow-hidden">
+        <div ref={heroRef} className="relative h-svh w-full overflow-hidden">
           <Image
             src={coverImage}
             alt="Capa de segurança e privacidade Sturnus Flow"
@@ -133,14 +130,11 @@ export function PrivacyPolicyPage() {
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-black/10" />
           <div className="absolute inset-0 flex items-end pb-16 sm:pb-20">
-            <div className="mx-auto flex w-full max-w-4xl flex-col gap-3 px-6">
-              <span className="flex items-center gap-2 text-xs font-semibold tracking-widest text-white/80 uppercase">
-                <ShieldCheck className="size-4" /> Privacidade &amp; Segurança
-              </span>
-              <h1 className="font-[family-name:var(--font-display)] text-3xl font-bold text-white sm:text-4xl">
+            <div className="flex w-full flex-col gap-6 px-4 sm:px-8 lg:pl-[8vw]">
+              <h1 className="display text-[12vw] text-white sm:text-[clamp(3.5rem,6.4vw,6.25rem)]">
                 Política de Privacidade
               </h1>
-              <p className="max-w-2xl text-base text-white/85 sm:text-lg">
+              <p className="max-w-2xl text-lg text-white sm:text-xl">
                 A Sturnus Flow é uma plataforma que cria agentes de IA para atendimento, vendas e relacionamento no
                 WhatsApp. Esta política explica como coletamos, usamos, compartilhamos e protegemos os dados
                 pessoais de clientes, usuários da plataforma e visitantes do nosso site.
@@ -151,14 +145,14 @@ export function PrivacyPolicyPage() {
       </section>
 
       <div className="mx-auto max-w-4xl px-6 pt-16 pb-20">
-        <p className="text-muted-foreground text-sm">Última atualização: setembro de 2026.</p>
+        <p className="text-base">Última atualização: setembro de 2026.</p>
 
         <div className="mt-12 flex flex-col gap-10">
           {SECTIONS.map((section) => (
             <section key={section.title} className="flex flex-col gap-2">
-              <h2 className="font-[family-name:var(--font-display)] text-xl font-semibold">{section.title}</h2>
+              <h2 className="text-xl font-medium sm:text-2xl">{section.title}</h2>
               {section.paragraphs.map((paragraph, i) => (
-                <p key={i} className="text-muted-foreground text-sm leading-relaxed sm:text-base">
+                <p key={i} className="max-w-[68ch] text-lg leading-relaxed">
                   {paragraph}
                 </p>
               ))}
@@ -166,10 +160,10 @@ export function PrivacyPolicyPage() {
           ))}
         </div>
 
-        <div className="mt-14 flex flex-wrap items-center gap-3 border-t pt-8">
-          <p className="text-muted-foreground text-sm">Ainda com dúvidas sobre privacidade e segurança?</p>
-          <a href="/contato" className={cn(buttonVariants({ size: "lg" }), "text-base")}>
-            <CalendarCheck className="size-4" /> Falar com especialista
+        <div className="bg-sky mt-16 flex flex-wrap items-center justify-between gap-4 p-8">
+          <p className="text-xl font-medium">Ainda com dúvidas sobre privacidade e segurança?</p>
+          <a href="/contato" className="pill bg-brand hover:bg-brand-deep text-white">
+            Falar com especialista
           </a>
         </div>
       </div>

@@ -157,7 +157,7 @@ function StageColumn({
                   <AlertDialogHeader>
                     <AlertDialogTitle>Excluir estágio &quot;{stage.name}&quot;?</AlertDialogTitle>
                     <AlertDialogDescription>
-                      Os leads deste estágio não são excluídos — vão para o primeiro estágio do Kanban. Esta ação não
+                      Os leads deste estágio não são excluídos. Eles vão para o primeiro estágio do Kanban. Esta ação não
                       pode ser desfeita.
                     </AlertDialogDescription>
                   </AlertDialogHeader>

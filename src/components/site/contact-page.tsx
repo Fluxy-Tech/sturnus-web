@@ -1,54 +1,43 @@
-import { CalendarCheck, Clock, ShieldCheck } from "lucide-react";
 import { CookieConsentBanner } from "@/components/site/cookie-consent-banner";
 import { LeadForm } from "@/components/site/lead-form";
 import { SiteFooter } from "@/components/site/site-footer";
 import { SiteHeader } from "@/components/site/site-header";
 
-const HIGHLIGHTS = [
-  { icon: CalendarCheck, text: "Agendamento no seu horário" },
-  { icon: Clock, text: "Retorno em até 1 dia útil" },
-  { icon: ShieldCheck, text: "Dados protegidos pela LGPD" },
-];
+const HIGHLIGHTS = ["Agendamento no seu horário", "Retorno em até 1 dia útil", "Dados protegidos pela LGPD"];
 
-/// Tela de contato: texto e "modal" de captação (card do LeadForm)
-/// centralizados, sobre fundo branco.
+/// Tela de contato: campo azul-marinho com o convite à esquerda e o
+/// formulário de captação sobre papel à direita, no mesmo sistema de
+/// capítulos da home.
 export function ContactPage() {
   return (
-    <div className="bg-dot-grid flex min-h-screen flex-col">
+    <div className="site flex min-h-svh flex-col">
       <SiteHeader />
       <CookieConsentBanner />
 
-      <main className="bg-background text-foreground relative flex flex-1 items-center justify-center overflow-hidden px-4 pt-[65px]">
-        {/* Manchas de azul claro desfocadas nos cantos da tela. */}
-        <div className="bg-primary/20 pointer-events-none absolute -top-32 -left-32 size-[28rem] rounded-full blur-3xl" />
-        <div className="pointer-events-none absolute -top-24 -right-40 size-96 rounded-full bg-sky-300/25 blur-3xl" />
-        <div className="pointer-events-none absolute -bottom-40 -left-24 size-96 rounded-full bg-sky-300/25 blur-3xl" />
-        <div className="bg-primary/20 pointer-events-none absolute -right-32 -bottom-32 size-[28rem] rounded-full blur-3xl" />
-
-        <div className="relative flex w-full max-w-xl flex-col items-center gap-6 py-16 text-center">
-          <div className="flex flex-col items-center gap-4">
-            <span className="text-primary text-xs font-semibold tracking-widest uppercase">Contato</span>
-            <h1 className="font-[family-name:var(--font-display)] text-3xl font-bold sm:text-4xl">
-              Fale com um de nossos especialistas
+      <main data-chapter="navy" className="grid flex-1 lg:grid-cols-2">
+        <div className="bg-navy text-paper flex flex-col justify-between gap-12 px-4 pt-[calc(72px+10svh)] pb-12 sm:px-8 lg:min-h-[100svh] lg:pl-[8.33vw]">
+          <div className="flex max-w-[34rem] flex-col gap-8">
+            <h1 className="display text-[13vw] lg:text-[clamp(3.5rem,6vw,6rem)]">
+              Vamos
+              <br />
+              conversar?
             </h1>
-            <ul className="flex flex-wrap justify-center gap-2">
-              {HIGHLIGHTS.map(({ icon: Icon, text }) => (
-                <li
-                  key={text}
-                  className="bg-primary/10 text-primary flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium"
-                >
-                  <Icon className="size-3.5" /> {text}
-                </li>
-              ))}
-            </ul>
+            <p className="text-xl leading-relaxed">
+              Agentes de IA, e-commerces, sites ou softwares sob medida: conte quem você é e um especialista entra em
+              contato para entender o seu projeto.
+            </p>
           </div>
+          <ul className="flex flex-col gap-2 text-lg">
+            {HIGHLIGHTS.map((text) => (
+              <li key={text}>{text}</li>
+            ))}
+          </ul>
+        </div>
 
-          <LeadForm />
-
-          <p className="text-muted-foreground text-sm sm:text-base">
-            Agentes de IA, e-commerces, sites ou softwares sob medida: conte quem você é e nossa equipe entra em
-            contato para entender o seu projeto.
-          </p>
+        <div className="bg-sky flex items-center justify-center px-4 py-12 sm:px-8 lg:pt-[calc(72px+4svh)]">
+          <div className="w-full max-w-xl">
+            <LeadForm />
+          </div>
         </div>
       </main>
 

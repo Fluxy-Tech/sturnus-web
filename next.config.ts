@@ -5,6 +5,8 @@ const nextConfig: NextConfig = {
   // dependências que o app realmente usa.
   output: "standalone",
   serverExternalPackages: ["pg"],
+  // 90 é usado nas fotos grandes recortadas em círculo da home.
+  images: { qualities: [75, 90] },
   async redirects() {
     return [{ source: "/contact", destination: "/contato", permanent: true }];
   },

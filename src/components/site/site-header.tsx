@@ -2,133 +2,131 @@
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import { Bot, ChevronDown, Code2, Globe, Menu, ShoppingCart, X } from "lucide-react";
+import Link from "next/link";
 import fluxyIcon from "@/assets/IconeAzulSemFundo.png";
 import fluxyIconWhite from "@/assets/IconeBrancoSemFundo.png";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
 
-// Ainda não há página própria por serviço: cada item leva à seção dele na
-// home.
-const SERVICES = [
-  { href: "/#agentes-de-ia", label: "Agentes de IA", description: "Atendimento e vendas no WhatsApp com IA", icon: Bot },
-  { href: "/#ecommerce", label: "Ecommerces", description: "Lojas virtuais prontas para vender", icon: ShoppingCart },
-  { href: "/#sites-web", label: "Sites Web", description: "Sites institucionais e landing pages", icon: Globe },
-  { href: "/#softwares", label: "Softwares", description: "Sistemas sob medida para sua operação", icon: Code2 },
-];
+/// Cores de cada capítulo da página. A seção marca `data-chapter` e o
+/// cabeçalho assume o fundo e a tinta do capítulo que está passando por baixo.
+export const CHAPTERS = {
+  paper: { bg: "var(--color-paper)", ink: "var(--color-navy)", dark: false },
+  sky: { bg: "var(--color-sky)", ink: "var(--color-navy)", dark: false },
+  brand: { bg: "var(--color-brand)", ink: "#ffffff", dark: true },
+  navy: { bg: "var(--color-navy)", ink: "var(--color-paper)", dark: true },
+  night: { bg: "var(--color-night)", ink: "var(--color-paper)", dark: true },
+} as const;
+
+export type Chapter = keyof typeof CHAPTERS;
 
 const NAV_LINKS = [
+  { href: "/#agentes-de-ia", label: "Agentes de IA" },
+  { href: "/#produtos", label: "Produtos" },
   { href: "/#cases", label: "Cases" },
   { href: "/#sobre", label: "Sobre" },
-  { href: "/contato", label: "Entrar em contato" },
   // Portal dos clientes da plataforma de agentes (Agent Console), não o admin do site.
   { href: "https://portal.sturnusflow.com.br/", label: "Portal Agentes" },
 ];
 
+/// Capítulo sob o cabeçalho: observa as seções com data-chapter e pega a que
+/// cruza a faixa do topo da tela.
+function useChapterUnderHeader() {
+  const [chapter, setChapter] = useState<Chapter>("paper");
+
+  useEffect(() => {
+    const sections = document.querySelectorAll<HTMLElement>("[data-chapter]");
+    if (!sections.length) return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) setChapter(entry.target.getAttribute("data-chapter") as Chapter);
+        }
+      },
+      { rootMargin: "0px 0px -92% 0px", threshold: 0 },
+    );
+    sections.forEach((el) => observer.observe(el));
+    return () => observer.disconnect();
+  }, []);
+
+  return chapter;
+}
+
+/// Barra simples: marca, links e uma ação. `transparent` é para páginas com
+/// foto escura no topo (política de privacidade): texto branco sobre a foto.
 export function SiteHeader({ transparent = false }: { transparent?: boolean }) {
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [mobileServicesOpen, setMobileServicesOpen] = useState(false);
-  // Com o menu mobile aberto, o painel do dropdown precisa de um fundo sólido
-  // pra ser legível por cima do hero — então o header some do modo
-  // transparente enquanto ele estiver aberto, mesmo que "transparent" siga
-  // true (usuário ainda no topo da página).
-  const solid = !transparent || mobileOpen;
-
-  const linkClass = cn("transition-colors", solid ? "text-black hover:text-black/70" : "text-white hover:text-white/70");
-  const mobileLinkClass = "text-foreground hover:text-foreground/70 py-2 transition-colors";
+  const chapter = useChapterUnderHeader();
+  const colors = CHAPTERS[chapter];
+  const clear = transparent && !mobileOpen;
+  const dark = clear || colors.dark;
 
   return (
     <header
-      className={cn("fixed inset-x-0 top-0 z-50 transition-colors", solid ? "border-b bg-background/95 backdrop-blur" : "bg-transparent")}
+      className="site fixed inset-x-0 top-0 z-50 transition-[background-color,color] duration-300"
+      style={{ backgroundColor: clear ? "transparent" : colors.bg, color: clear ? "#ffffff" : colors.ink }}
     >
-      <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-4">
-        <a href="/#top" className="flex items-center gap-2">
-          <Image src={solid ? fluxyIcon : fluxyIconWhite} alt="Sturnus Flow" className="h-8 w-8 object-contain" />
-        </a>
-        <nav className="hidden items-center gap-8 text-base font-medium sm:flex">
-          <a href="/#top" className={linkClass}>
-            Início
-          </a>
-          <DropdownMenu modal={false}>
-            <DropdownMenuTrigger className={cn("group flex items-center gap-1 outline-none", linkClass)}>
-              Serviços
-              <ChevronDown className="size-4 transition-transform group-data-[state=open]:rotate-180" />
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="center" sideOffset={12} className="w-80 p-2">
-              {SERVICES.map((service) => (
-                <DropdownMenuItem key={service.label} asChild className="items-start gap-3 p-2.5">
-                  <a href={service.href}>
-                    <span className="bg-primary/10 text-primary flex size-9 shrink-0 items-center justify-center rounded-lg">
-                      <service.icon className="size-5" />
-                    </span>
-                    <span className="flex flex-col">
-                      <span className="text-sm font-semibold">{service.label}</span>
-                      <span className="text-muted-foreground text-xs">{service.description}</span>
-                    </span>
-                  </a>
-                </DropdownMenuItem>
-              ))}
-            </DropdownMenuContent>
-          </DropdownMenu>
+      <div className="flex h-[72px] items-center justify-between gap-6 px-4 sm:px-8">
+        <Link href="/#top" className="flex items-center gap-2.5" onClick={() => setMobileOpen(false)}>
+          <Image src={dark ? fluxyIconWhite : fluxyIcon} alt="" className="size-8 object-contain" priority />
+          <span className="display text-[1.375rem] leading-none">Sturnus Flow</span>
+        </Link>
+
+        <nav aria-label="Principal" className="hidden items-center gap-8 text-[0.9375rem] font-medium lg:flex">
           {NAV_LINKS.map((link) => (
-            <a key={link.label} href={link.href} className={linkClass}>
+            <a key={link.label} href={link.href} className="text-link">
               {link.label}
             </a>
           ))}
+          <Link
+            href="/contato"
+            className={cn("pill !py-3", dark ? "bg-white text-navy hover:bg-sky" : "bg-brand text-white hover:bg-brand-deep")}
+          >
+            Fale conosco
+          </Link>
         </nav>
+
         <button
           type="button"
           onClick={() => setMobileOpen((open) => !open)}
-          aria-label={mobileOpen ? "Fechar menu" : "Abrir menu"}
           aria-expanded={mobileOpen}
-          className={cn("sm:hidden", solid ? "text-black" : "text-white")}
+          aria-controls="menu-mobile"
+          className="text-[1.0625rem] font-medium lg:hidden"
         >
-          {mobileOpen ? <X className="size-6" /> : <Menu className="size-6" />}
+          {mobileOpen ? "Fechar" : "Menu"}
         </button>
       </div>
+
       {mobileOpen && (
-        <nav className="border-border flex flex-col items-center gap-1 border-t px-4 py-4 text-base font-medium sm:hidden">
-          <a href="/#top" className={mobileLinkClass} onClick={() => setMobileOpen(false)}>
-            Início
-          </a>
-          <button
-            type="button"
-            onClick={() => setMobileServicesOpen((open) => !open)}
-            aria-expanded={mobileServicesOpen}
-            className={cn(mobileLinkClass, "flex items-center gap-1")}
-          >
-            Serviços
-            <ChevronDown className={cn("size-4 transition-transform", mobileServicesOpen && "rotate-180")} />
-          </button>
-          {mobileServicesOpen && (
-            <div className="bg-muted/50 mb-1 flex w-full max-w-xs flex-col gap-1 rounded-lg p-2">
-              {SERVICES.map((service) => (
-                <a
-                  key={service.label}
-                  href={service.href}
-                  onClick={() => setMobileOpen(false)}
-                  className="hover:bg-accent flex items-center gap-3 rounded-md px-2 py-2 text-sm"
-                >
-                  <service.icon className="text-primary size-4 shrink-0" />
-                  {service.label}
-                </a>
-              ))}
-            </div>
-          )}
+        <nav
+          id="menu-mobile"
+          aria-label="Principal"
+          className="animate-in fade-in slide-in-from-top-2 flex flex-col gap-1 px-4 pt-2 pb-8 duration-200 lg:hidden"
+        >
           {NAV_LINKS.map((link) => (
-            <a key={link.label} href={link.href} className={mobileLinkClass} onClick={() => setMobileOpen(false)}>
+            <a
+              key={link.label}
+              href={link.href}
+              onClick={() => setMobileOpen(false)}
+              className="display py-2 text-[2.25rem]"
+            >
               {link.label}
             </a>
           ))}
+          <Link
+            href="/contato"
+            onClick={() => setMobileOpen(false)}
+            className={cn("pill mt-4 w-fit", dark ? "bg-white text-navy" : "bg-brand text-white")}
+          >
+            Fale conosco
+          </Link>
         </nav>
       )}
     </header>
   );
 }
 
-/// "Fora da faixa do hero escuro" — cabeçalho fica sólido depois de passar do
-/// hero (sobre o conteúdo claro abaixo); só fica transparente enquanto a
-/// imagem escura do hero está atrás dele.
+/// true depois que o visitante passa da foto escura do topo — usado pela
+/// política de privacidade pra tirar o cabeçalho do modo transparente.
 export function usePastHero(heroRef: React.RefObject<HTMLElement | null>) {
   const [pastHero, setPastHero] = useState(false);
 
